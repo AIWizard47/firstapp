@@ -7,25 +7,26 @@ from .models import Details
 
 # Create your views here.
 def index(request):
-    det = Details.objects.all()
-    sam = {
-        'name' : det[0].name,
-        'age' : det[0].age,
-        'college' :'IES University',
-        'course' : 'B-Tech'
-    }
-    return render(request,'index.html',sam)
+    # det = Details.objects.all()
+    # sam = {
+    #     'name' : det[0].name,
+    #     'age' : det[0].age,
+    #     'college' :'IES University',
+    #     'course' : 'B-Tech'
+    # }
+    return render(request,'index.html')
 
 def API(request):
     if request.method=='POST':
         name = str(request.POST['name'])
+        photo = str(request.POST['link'])
         age = str(request.POST['age'])
         height = str(request.POST['height'])
         weight = str(request.POST['weight'])
         amount_of_word = len(name.split())
         
-        user = Details.objects.create(name= name,age = age,height=height,weight = weight)
-        user.save();
+        user = Details.objects.create(name= name,photo = photo, age = age,height=height,weight = weight)
+        user.save()
     # return render(request,'download.html',{'amount':word})
     return redirect('index')
 
@@ -38,6 +39,7 @@ def api(request):
     for detail_object in details_objects:
         data_set = {
             'id':detail_object.id,
+            'photo': detail_object.photo,
             'name': detail_object.name,
             'age': detail_object.age,
             'height': detail_object.height,
@@ -45,7 +47,10 @@ def api(request):
             }
         data_sets.append(data_set)
     # Return the data_sets list as a JSON response
-    return JsonResponse(data_sets, safe=False)
+    if data_sets is None:
+        return redirect('/')
+    else:
+        return JsonResponse(data_sets, safe=False)
 
 def register(request):
     if request.method == 'POST':
@@ -87,3 +92,12 @@ def login(request):
             return redirect('register')
     else:
         return render(request,'register.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
+
+def profile(request,pk):
+    # if User.is_authenticated:
+    #     pk = User
+    return render(request,'profile.html',{'pk':pk})
