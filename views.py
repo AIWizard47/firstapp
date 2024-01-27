@@ -5,6 +5,7 @@ from django.contrib import messages
 import json
 from .models import Details
 
+
 # Create your views here.
 def index(request):
     # det = Details.objects.all()
@@ -19,6 +20,7 @@ def index(request):
 def API(request):
     if request.method=='POST':
         name = str(request.POST['name'])
+        cname = str(request.POST['cname'])
         photo = str(request.POST['link'])
         age = str(request.POST['age'])
         height = str(request.POST['height'])
@@ -38,12 +40,13 @@ def api(request):
     # Iterate through each detail object and add to the data_sets list
     for detail_object in details_objects:
         data_set = {
-            'id':detail_object.id,
+            'id':detail_object.pk,
             'photo': detail_object.photo,
             'name': detail_object.name,
-            'age': detail_object.age,
-            'height': detail_object.height,
-            'weight': detail_object.weight
+            'cname': detail_object.cname,
+            'time': detail_object.time,
+            'month': detail_object.month,
+            'view': detail_object.view
             }
         data_sets.append(data_set)
     # Return the data_sets list as a JSON response
@@ -78,7 +81,6 @@ def register(request):
 
 def login(request):
     if request.method == 'POST':
-        stored_hash = "2ye8UY**************************************"
         username = request.POST['username']
         password = request.POST['password']
         
